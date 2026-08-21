@@ -19,7 +19,7 @@ print(df.isnull().sum())
 print(df.shape)
 
 # En su README.md, creen una seccion "Funciones investigadas" 
-# y expliquen con sus propias palabras que hace cada una:
+# y expliquen con sus propias palabra que hace cada una:
 # - info()
 # - isnull().sum()
 # - shape
