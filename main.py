@@ -1,9 +1,13 @@
 # ============================================
-# ANALISIS DEL DATASET TITANIC
-# Guia paso a paso
+# TITANIC - Exploracion, Limpieza y Analisis
 # ============================================
 import pandas as pd
-pd.set_option('display.max_columns', None)  # Muestra TODAS las columnas al imprimir, sin cortar
+import matplotlib.pyplot as plt
+import os
+pd.set_option('display.max_columns', None)
+
+# Crea la carpeta resultados si no existe
+os.makedirs("resultados", exist_ok=True)
 
 # --------------------------------------------
 # PASO 1: Leer el archivo
@@ -18,38 +22,58 @@ print(df.info())
 print(df.isnull().sum())
 print(df.shape)
 
-# En su README.md, creen una seccion "Funciones investigadas" 
-# y expliquen con sus propias palabra que hace cada una:
-# - info()
-# - isnull().sum()
-# - shape
-# - head()
-
-# Tambien anoten:
-# - Cuantas filas y columnas tiene el dataset
-# - Que columnas tienen valores vacios y cuantos
+# En su README.md, seccion "Funciones investigadas" (si ya la 
+# tienen de la sesion pasada, NO la repitan): 
+# expliquen info(), isnull().sum(), shape, head()
 
 # --------------------------------------------
-# PASO 3: Limpieza basica (COMPLETEN USTEDES)
+# PASO 3: Cuantos sobrevivieron?
 # --------------------------------------------
-# Investiguen: la columna "Age" tiene varios valores vacios.
-# Decidan como rellenarla (puede ser con el promedio de edad)
-# Pista: usen .fillna()
+print(df['Survived'].value_counts())
 
+# En su README (si no la tienen ya de antes): que hace value_counts()?
 
-# La columna "Cabin" tiene MUCHOS valores vacios (mas de la mitad).
-# Investiguen: en estos casos, a veces es mejor ELIMINAR la 
-# columna completa en vez de rellenarla. Investiguen drop()
-
-# En su README, agreguen tambien: que hace fillna()? que hace drop()?
+# ============================================
+# CONTENIDO NUEVO DE HOY (a partir de aqui)
+# ============================================
 
 # --------------------------------------------
-# PASO 4: Primer analisis simple
+# PASO 4: Limpieza
 # --------------------------------------------
-# Cuenten cuantos pasajeros sobrevivieron vs no sobrevivieron
-# Pista: usen value_counts() sobre la columna "Survived"
+promedio_edad = df['Age'].mean()
+df['Age'] = df['Age'].fillna(promedio_edad)
+df = df.drop('Cabin', axis=1)
 
-# En su README: que hace value_counts()?
-
-# Guardar el resultado limpio
+print("Limpieza completa")
 df.to_csv("data/titanic_limpio.csv", index=False)
+
+# En su README: que hace fillna()? que hace drop()?
+
+# --------------------------------------------
+# PASO 5: Reflexionen antes de analizar
+# --------------------------------------------
+# El Titanic tenia la politica "mujeres y ninos primero" en los 
+# botes salvavidas. Van a comprobarlo con los numeros.
+
+# --------------------------------------------
+# PASO 6: EJEMPLO RESUELTO - Supervivencia por clase
+# --------------------------------------------
+supervivencia_clase = df.groupby('Pclass')['Survived'].mean()
+print(supervivencia_clase)
+
+supervivencia_clase.plot(kind='bar', title='Supervivencia por Clase')
+plt.ylabel('Proporcion de sobrevivientes')
+plt.savefig("resultados/supervivencia_clase.png")
+plt.show()
+
+# --------------------------------------------
+# PASO 7: AHORA USTEDES - Supervivencia por genero
+# --------------------------------------------
+# Repitan el mismo patron del Paso 6, pero agrupando por "Sex" 
+# en vez de "Pclass". Guarden como resultados/supervivencia_genero.png
+
+
+# En su README: 
+# - Que hace fillna()? Que hace drop()?
+# - Cual clase tuvo mas supervivencia? Y cual genero?
+# - Responda la pregunta del Paso 5 con los numeros reales
